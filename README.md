@@ -1,7 +1,7 @@
 # Euler jakumo
 
 You can start this game by clicking on the link
-https://dmitriynarzyaev.github.io/euler.jakumo/
+https://dmitriynarzyaev.github.io/EulerJakumo/
 
 ## Deployment
 * Download and install Node.js and npm (https://www.npmjs.com/get-npm)
