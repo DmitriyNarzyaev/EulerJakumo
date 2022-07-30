@@ -149,7 +149,7 @@ export default class MainContainer extends Container {
 		})
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 1 /////////////////////////////////
 
 	private euler1Function():void {
 		this._consoleText += "Проект Эйлера. Задача 1:\n" +
@@ -176,7 +176,7 @@ export default class MainContainer extends Container {
 		this._consoleText += "\n\nСумма = " + summ;
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 2 /////////////////////////////////
 
 	private euler2Function():void {
 		this._consoleText += "Проект Эйлера. Задача 2:\n" +
@@ -211,7 +211,7 @@ export default class MainContainer extends Container {
 		this._consoleText += "\n\nСумма чётных чисел: " + evenSumm;
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 3 /////////////////////////////////
 
 	private euler3Function():void {
 		this._consoleText += "Проект Эйлера. Задача 3:\n" +
@@ -226,7 +226,7 @@ export default class MainContainer extends Container {
 		//let numberToCheck:number = 600851475143;				//	6857 ???
 		for (let i:number = numberToCheck/5; i>1; i--) {
 			if (numberToCheck % i == 0) {
-				if (this.simpleDivisorChecking(i)) {
+				if (this.simpleNumberChecking(i)) {
 					this._consoleText += i + "\n";
 					break
 				}
@@ -234,7 +234,7 @@ export default class MainContainer extends Container {
 		}
 	}
 
-	private simpleDivisorChecking(element:number):boolean {
+	private simpleNumberChecking(element:number):boolean {
 		for (let j:number = 2; j <= Math.sqrt(element); j++) {
 			if (Number.isInteger(element/j)) {
 				return false;
@@ -243,7 +243,7 @@ export default class MainContainer extends Container {
 		return true;
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 4 /////////////////////////////////
 
 	private euler4Function():void {
 		this._consoleText += "Проект Эйлера. Задача 4:\n" +
@@ -281,7 +281,7 @@ export default class MainContainer extends Container {
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 5 /////////////////////////////////
 
 	private euler5Function():void {
 		this._consoleText += "Проект Эйлера. Задача 5:\n" +
@@ -310,7 +310,7 @@ export default class MainContainer extends Container {
 		}
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 6 /////////////////////////////////
 
 	private euler6Function():void {
 		this._consoleText += "Проект Эйлера. Задача 6:\n" +
@@ -353,7 +353,7 @@ export default class MainContainer extends Container {
 		return Math.pow(squareOfTheSum, 2);
 	}
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
+	///////////////////////////////// 7 /////////////////////////////////
 
 	private euler7Function():void {
 		this._consoleText += "Проект Эйлера. Задача 7:\n" +
@@ -366,11 +366,13 @@ export default class MainContainer extends Container {
 
 
 	private eulerJakumo7():void {
-		let numberToCheck = 6;
+		let simpleNumberToCheck = 10001;
 		let iterator:number = 0;
-		for (let i:number = 1; i<20; i++) {				//переделать на while (i<20);
-			if (this.simpleDivisorChecking(i)) {
-				if (iterator == numberToCheck) {
+		let i:number = 0;
+		while(iterator <= simpleNumberToCheck){
+			i++
+			if (this.simpleNumberChecking(i)) {
+				if (iterator == simpleNumberToCheck) {
 					this._consoleText += i + "\n";
 					break
 				}
