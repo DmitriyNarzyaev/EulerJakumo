@@ -443,22 +443,22 @@ export default class MainContainer extends Container {
 		let product:number = 0;
 		let greatestProduct:number = 0;
 		let numbersForGreatestProduct:string;
+		let numberOfMultipliers:number = 13;
 
 		for (let i:number = 0; i <= checkingNumber.length-1; i++) {
 			if (checkingNumber[(i + 4)] != null) { 
-				product =
-					Number(checkingNumber[i]) *
-					Number(checkingNumber[i+1]) *
-					Number(checkingNumber[i+2]) *
-					Number(checkingNumber[i+3]);
+				product = Number(checkingNumber[i]);
+				for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
+					product *= Number(checkingNumber[i + j]);
+				}
 				
 				if (greatestProduct < product) {
 					greatestProduct = product;
-					numbersForGreatestProduct =
-						checkingNumber[i] + ", " +
-						checkingNumber[i+1] + ", " +
-						checkingNumber[i+2] + ", " +
-						checkingNumber[i+3];
+
+					numbersForGreatestProduct = checkingNumber[i] + " ";
+					for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
+						numbersForGreatestProduct += checkingNumber[i+j] + " ";
+					}
 				}
 			}
 		}
