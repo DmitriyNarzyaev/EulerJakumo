@@ -92,6 +92,10 @@ export default class MainContainer extends Container {
 		this.addChild(button10);
 		buttons.push(button10);
 
+		let button11:Button = new Button("Euler-9", () => {this.euler9Function();},);
+		this.addChild(button11);
+		buttons.push(button11);
+
 		buttons.forEach(button => {
 			button.x = indentX;
 			button.y = indentY;
@@ -368,7 +372,6 @@ export default class MainContainer extends Container {
 		this.initTextWindow(this._consoleText);
 	}
 
-
 	private eulerJakumo7():void {
 		let simpleNumberToCheck = 10001;
 		let iterator:number = 0;
@@ -445,25 +448,65 @@ export default class MainContainer extends Container {
 		let numbersForGreatestProduct:string;
 		let numberOfMultipliers:number = 13;
 
-		for (let i:number = 0; i <= checkingNumber.length-1; i++) {
-			if (checkingNumber[(i + 4)] != null) { 
-				product = Number(checkingNumber[i]);
-				for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
-					product *= Number(checkingNumber[i + j]);
-				}
-				
-				if (greatestProduct < product) {
-					greatestProduct = product;
+		for (let i:number = 0; i <= checkingNumber.length - numberOfMultipliers - 1; i++) {
+			product = Number(checkingNumber[i]);
+			for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
+				product *= Number(checkingNumber[i + j]);
+			}
 
-					numbersForGreatestProduct = checkingNumber[i] + " ";
-					for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
-						numbersForGreatestProduct += checkingNumber[i+j] + " ";
-					}
+			if (greatestProduct < product) {
+				greatestProduct = product;
+
+				numbersForGreatestProduct = checkingNumber[i] + " ";
+				for (let j:number = 1; j<= numberOfMultipliers-1; j++ ) {
+					numbersForGreatestProduct += checkingNumber[i+j] + " ";
 				}
 			}
 		}
 		this._consoleText += "множители = " +numbersForGreatestProduct + "\n";
 		this._consoleText += greatestProduct;
+	}
+
+	///////////////////////////////// 7 /////////////////////////////////
+
+	private euler9Function():void {
+		this._consoleText += "Проект Эйлера. Задача 7:\n" +
+		"Пифагорейский триплет - это набор из трех натуральных чисел a < b < c, для которых,\n" +
+		"a² + b² = c²\n" +
+		"Например, 3² + 4² = 9 + 16 = 25 = 5².\n" +
+		"Существует ровно один пифагорейский триплет, для которого a + b + c = 1000.\n" +
+		"Найдите abc.\n\n"
+		this.eulerJakumo9();
+		this.initTextWindow(this._consoleText);
+	}
+
+	private eulerJakumo9():void {
+		let searchA:number = 2;
+		let searchB:number;
+		let searchC:number = 0;
+		let inputText = prompt('Сумма чисел «Пифагорейского Триплета»', "1000");
+		let maximumValue = Number(inputText);
+		let hasASolution:boolean = false;
+
+		for (searchA; searchA<maximumValue; searchA++) {
+			for (let i:number = 0; i < maximumValue - searchA; i++) {
+				searchB = searchA + i;
+				let sumOfTheSquares = Math.pow(searchA, 2) + Math.pow(searchB, 2);
+				searchC = searchC = Math.sqrt(sumOfTheSquares);
+				if ((searchA + searchB + searchC) ==  maximumValue) {
+					hasASolution = true;
+					this._consoleText += searchA + "² + ";
+					this._consoleText += searchB + "² = ";
+					this._consoleText += sumOfTheSquares + "\n";
+					this._consoleText += "√" + sumOfTheSquares + " = " + searchC + "\n";
+					this._consoleText += "«Пифагорейский триплет» = " + searchA + " < " + searchB + " < " + searchC + "\n";
+					this._consoleText += searchA + " + " + searchB + " + " + searchC + " = " + (searchA + searchB + searchC) + "\n\n";
+				}
+			}
+		}
+		if (hasASolution == false) {
+			this._consoleText += "«Пифагорейский триплет» с данной суммой не найден.";
+		}
 	}
 }
 
