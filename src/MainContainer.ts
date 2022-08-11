@@ -47,6 +47,7 @@ export default class MainContainer extends Container {
 	}
 
 	private initButton():void {
+		let maxButtonsOnColumn:number = 12;
 		let indentX:number = 20;
 		let indentY:number = 10;
 		let gap:number = 10;
@@ -96,11 +97,19 @@ export default class MainContainer extends Container {
 		this.addChild(button11);
 		buttons.push(button11);
 
-		buttons.forEach(button => {
-			button.x = indentX;
-			button.y = indentY;
-			indentY += button.height + gap;
-		});
+		let button12:Button = new Button("Euler-10", () => {this.euler10Function();},);
+		this.addChild(button12);
+		buttons.push(button12);
+
+		for (let i:number = 0; i < buttons.length; i++) {
+			buttons[i].x = indentX;
+			buttons[i].y = indentY;
+			indentY += buttons[i].height + gap;
+			if ((i+1) % maxButtonsOnColumn == 0) {
+				indentX += buttons[i].width + gap;
+				indentY = 10;
+			}
+		}
 	}
 
 	private initTextWindow(text:string):void {
@@ -467,10 +476,10 @@ export default class MainContainer extends Container {
 		this._consoleText += greatestProduct;
 	}
 
-	///////////////////////////////// 7 /////////////////////////////////
+	///////////////////////////////// 9 /////////////////////////////////
 
 	private euler9Function():void {
-		this._consoleText += "Проект Эйлера. Задача 7:\n" +
+		this._consoleText += "Проект Эйлера. Задача 9:\n" +
 		"Пифагорейский триплет - это набор из трех натуральных чисел a < b < c, для которых,\n" +
 		"a² + b² = c²\n" +
 		"Например, 3² + 4² = 9 + 16 = 25 = 5².\n" +
@@ -507,6 +516,27 @@ export default class MainContainer extends Container {
 		if (hasASolution == false) {
 			this._consoleText += "«Пифагорейский триплет» с данной суммой не найден.";
 		}
+	}
+
+	///////////////////////////////// 9 /////////////////////////////////
+
+	private euler10Function():void {
+		this._consoleText += "Проект Эйлера. Задача 10:\n" +
+		"Сумма простых чисел ниже 10 равна 2 + 3 + 5 + 7 = 17.\n" +
+		"Найдите сумму всех простых чисел, меньших двух миллионов.\n\n"
+		this.eulerJakumo10();
+		this.initTextWindow(this._consoleText);
+	}
+
+	private eulerJakumo10():void {
+		let maximumValue:number = 2000000;
+		let simpleNumberSum:number = 0;
+		for (let i:number = 1; i < maximumValue; i++) {
+			if (this.simpleNumberChecking(i)) {
+				simpleNumberSum += i;
+			}
+		}
+		this._consoleText += simpleNumberSum;
 	}
 }
 

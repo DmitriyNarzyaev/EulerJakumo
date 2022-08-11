@@ -7,8 +7,8 @@ export default class Button extends Container {
     public buttonHenght:number = 100;
     private readonly _clickCallback:()=>void;
     public buttonName:string;
-    private readonly _buttonWidth:number = 150;
-    private readonly _buttonHeight:number = 40;
+    private readonly _buttonWidth:number = 100;
+    private readonly _buttonHeight:number = 38;
 
 	constructor(
             buttonName:string,
