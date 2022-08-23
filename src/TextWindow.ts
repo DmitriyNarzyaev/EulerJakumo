@@ -3,10 +3,10 @@ import { TextStyle } from "pixi.js";
 
 export default class TextWindow extends Container {
 
-	constructor(text:string, width:number, height:number) {
+	constructor(text:string, width:number, height:number, fontColor:number) {
 		super();
         this.initBackground(width, height);
-        this.initText(text);
+        this.initText(text, fontColor);
 	}
 
     private initBackground(width:number, height:number):void {
@@ -18,11 +18,11 @@ export default class TextWindow extends Container {
         this.addChild(background);
     }
 
-    private initText(text:string):void {
+    private initText(text:string, fontColor:number):void {
         let textStyle:TextStyle = new PIXI.TextStyle ({
-            fontFamily: 'Arial',
+            fontFamily: 'Consolas',
             fontSize: 16,
-            fill: ['#000000'],
+            fill: [fontColor],
         });
 
         const textGap:number = 10;

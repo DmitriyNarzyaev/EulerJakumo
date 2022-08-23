@@ -6,9 +6,12 @@ import TextWindow from "./TextWindow";
 export default class MainContainer extends Container {
 	public static WIDTH:number = 1200;
 	public static HEIGHT:number = 600;
+	private readonly _windowWidth:number = MainContainer.WIDTH - MainContainer.WIDTH/3;
+	private readonly _windowHeight:number = MainContainer.HEIGHT;
 	private _background:PIXI.Graphics;
 	private _json:IBlock
 	private _textWindow:TextWindow;
+	private _textHighlighter:PIXI.Graphics;
 	private _consoleText:string = "";
 
 	constructor() {
@@ -101,6 +104,14 @@ export default class MainContainer extends Container {
 		this.addChild(button12);
 		buttons.push(button12);
 
+		let button13:Button = new Button("Euler-11", () => {this.euler11Function();},);
+		this.addChild(button13);
+		buttons.push(button13);
+
+		let button14:Button = new Button("Fractal", () => {this.triangleFunction();},);
+		this.addChild(button14);
+		buttons.push(button14);
+
 		for (let i:number = 0; i < buttons.length; i++) {
 			buttons[i].x = indentX;
 			buttons[i].y = indentY;
@@ -113,15 +124,43 @@ export default class MainContainer extends Container {
 	}
 
 	private initTextWindow(text:string):void {
-		const windowWidth:number = MainContainer.WIDTH - MainContainer.WIDTH/3;
-		const windowHeight:number = MainContainer.HEIGHT;
+		this.removeWindow();
+		this._consoleText = "";
+		this._textWindow = new TextWindow(text, this._windowWidth, this._windowHeight, 0x000000);
+		this._textWindow.x = MainContainer.WIDTH - this._windowWidth;
+		this.addChild(this._textWindow);
+	}
+
+	private removeWindow():void {
 		if (this._textWindow) {
 			this.removeChild(this._textWindow);
 		}
-		this._consoleText = "";
-		this._textWindow = new TextWindow(text, windowWidth, windowHeight);
-		this._textWindow.x = MainContainer.WIDTH - windowWidth;
-		this.addChild(this._textWindow);
+		if (this._textHighlighter) {
+			this.removeChild(this._textHighlighter);
+		}
+		if (this._triangleContainer) {
+			this.removeChild(this._triangleContainer);
+		}
+		clearInterval(this._interval);
+	}
+
+	private initTextHighlighter():void {
+		this._textHighlighter = new PIXI.Graphics;
+		this._textHighlighter
+			.beginFill(0xff0000, .5) 
+			.drawRect(0, 0, 20, 20)
+			.endFill()
+			.beginFill(0xff0000, .5) 
+			.drawRect(26, 15, 20, 20)
+			.endFill()
+			.beginFill(0xff0000, .5) 
+			.drawRect(53, 30, 20, 20)
+			.endFill()
+			.beginFill(0xff0000, .5) 
+			.drawRect(79, 45, 20, 20);
+		this.addChild(this._textHighlighter);
+		this._textHighlighter.x = 620;
+		this._textHighlighter.y = 142;
 	}
 
 	////////////////////////////////////////////////////////////////////////////////////////////////
@@ -537,6 +576,257 @@ export default class MainContainer extends Container {
 			}
 		}
 		this._consoleText += simpleNumberSum;
+	}
+
+	/////////////////////////////// 9 /////////////////////////////////
+
+	private euler11Function():void {
+		this._consoleText += "Проект Эйлера. Задача 11:\n" +
+		"В приведенной ниже сетке 20x20 четыре числа вдоль диагональной линии отмечены красным.\n\n" +
+		"08 02 22 97 38 15 00 40 00 75 04 05 07 78 52 12 50 77 91 08\n" +
+		"49 49 99 40 17 81 18 57 60 87 17 40 98 43 69 48 04 56 62 00\n" +
+		"81 49 31 73 55 79 14 29 93 71 40 67 53 88 30 03 49 13 36 65\n" +
+		"52 70 95 23 04 60 11 42 69 24 68 56 01 32 56 71 37 02 36 91\n" +
+		"22 31 16 71 51 67 63 89 41 92 36 54 22 40 40 28 66 33 13 80\n" +
+		"24 47 32 60 99 03 45 02 44 75 33 53 78 36 84 20 35 17 12 50\n" +
+		"32 98 81 28 64 23 67 10 26 38 40 67 59 54 70 66 18 38 64 70\n" +
+		"67 26 20 68 02 62 12 20 95 63 94 39 63 08 40 91 66 49 94 21\n" +
+		"24 55 58 05 66 73 99 26 97 17 78 78 96 83 14 88 34 89 63 72\n" +
+		"21 36 23 09 75 00 76 44 20 45 35 14 00 61 33 97 34 31 33 95\n" +
+		"78 17 53 28 22 75 31 67 15 94 03 80 04 62 16 14 09 53 56 92\n" +
+		"16 39 05 42 96 35 31 47 55 58 88 24 00 17 54 24 36 29 85 57\n" +
+		"86 56 00 48 35 71 89 07 05 44 44 37 44 60 21 58 51 54 17 58\n" +
+		"19 80 81 68 05 94 47 69 28 73 92 13 86 52 17 77 04 89 55 40\n" +
+		"04 52 08 83 97 35 99 16 07 97 57 32 16 26 26 79 33 27 98 66\n" +
+		"88 36 68 87 57 62 20 72 03 46 33 67 46 55 12 32 63 93 53 69\n" +
+		"04 42 16 73 38 25 39 11 24 94 72 18 08 46 29 32 40 62 76 36\n" +
+		"20 69 36 41 72 30 23 88 34 62 99 69 82 67 59 85 74 04 36 16\n" +
+		"20 73 35 29 78 31 90 01 74 31 49 71 48 86 81 16 23 57 05 54\n" +
+		"01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48\n\n" +
+		"Произведение этих чисел равно 26 x 63 x 78 x 14 = 1788696.\n" +
+		"Каково наибольшее произведение четырех соседних чисел в одном направлении\n" +
+		"(вверх, вниз, влево, вправо или по диагонали) в сетке 20 x 20?\n\n"
+		this.eulerJakumo11();
+		this.initTextWindow(this._consoleText);
+		this.initTextHighlighter();
+	}
+
+	private eulerJakumo11():void {
+		let numberToCheck:number[][] = [];
+	 	let line1:number[] = [8, 2, 22, 97, 38, 15, 0, 40, 0, 75, 4, 5, 7, 78, 52, 12, 50, 77, 91, 8];
+	 	numberToCheck.push(line1);
+	 	let line2:number[] = [49, 49, 99, 40, 17, 81, 18, 57, 60, 87, 17, 40, 98, 43, 69, 48, 4, 56, 62, 0];
+	 	numberToCheck.push(line2);
+	 	let line3:number[] = [81, 49, 31, 73, 55, 79, 14, 29, 93, 71, 40, 67, 53, 88, 30, 3, 49, 13, 36, 65];
+	 	numberToCheck.push(line3);
+	 	let line4:number[] = [52, 70, 95, 23, 4, 60, 11, 42, 69, 24, 68, 56, 1, 32, 56, 71, 37, 2, 36, 91];
+	 	numberToCheck.push(line4);
+	 	let line5:number[] = [22, 31, 16, 71, 51, 67, 63, 89, 41, 92, 36, 54, 22, 40, 40, 28, 66, 33, 13, 80];
+	 	numberToCheck.push(line5);
+	 	let line6:number[] = [24, 47, 32, 60, 99, 3, 45, 2, 44, 75, 33, 53, 78, 36, 84, 20, 35, 17, 12, 50];
+	 	numberToCheck.push(line6);
+	 	let line7:number[] = [32, 98, 81, 28, 64, 23, 67, 10, 26, 38, 40, 67, 59, 54, 70, 66, 18, 38, 64, 70];
+	 	numberToCheck.push(line7);
+		let line8:number[] = [67, 26, 20, 68, 2, 62, 12, 20, 95, 63, 94, 39, 63, 8, 40, 91, 66, 49, 94, 21];
+	 	numberToCheck.push(line8);
+	 	let line9:number[] = [24, 55, 58, 5, 66, 73, 99, 26, 97, 17, 78, 78, 96, 83, 14, 88, 34, 89, 63, 72];
+	 	numberToCheck.push(line9);
+	 	let line10:number[] = [21, 36, 23, 9, 75, 0, 76, 44, 20, 45, 35, 14, 0, 61, 33, 97, 34, 31, 33, 95];
+	 	numberToCheck.push(line10);
+	 	let line11:number[] = [78, 17, 53, 28, 22, 75, 31, 67, 15, 94, 3, 80, 4, 62, 16, 14, 9, 53, 56, 92];
+	 	numberToCheck.push(line11);
+	 	let line12:number[] = [16, 39, 5, 42, 96, 35, 31, 47, 55, 58, 88, 24, 0, 17, 54, 24, 36, 29, 85, 57];
+	 	numberToCheck.push(line12);
+	 	let line13:number[] = [86, 56, 0, 48, 35, 71, 89, 7, 5, 44, 44, 37, 44, 60, 21, 58, 51, 54, 17, 58];
+	 	numberToCheck.push(line13);
+	 	let line14:number[] = [19, 80, 81, 68, 5, 94, 47, 69, 28, 73, 92, 13, 86, 52, 17, 77, 4, 89, 55, 40];
+	 	numberToCheck.push(line14);
+	 	let line15:number[] = [4, 52, 8, 83, 97, 35, 99, 16, 7, 97, 57, 32, 16, 26, 26, 79, 33, 27, 98, 66];
+	 	numberToCheck.push(line15);
+	 	let line16:number[] = [88, 36, 68, 87, 57, 62, 20, 72, 3, 46, 33, 67, 46, 55, 12, 32, 63, 93, 53, 69];
+	 	numberToCheck.push(line16);
+	 	let line17:number[] = [4, 42, 16, 73, 38, 25, 39, 11, 24, 94, 72, 18, 8, 46, 29, 32, 40, 62, 76, 36];
+	 	numberToCheck.push(line17);
+	 	let line18:number[] = [20, 69, 36, 41, 72, 30, 23, 88, 34, 62, 99, 69, 82, 67, 59, 85, 74, 4, 36, 16];
+	 	numberToCheck.push(line18);
+	 	let line19:number[] = [20, 73, 35, 29, 78, 31, 90, 1, 74, 31, 49, 71, 48, 86, 81, 16, 23, 57, 5, 54];
+	 	numberToCheck.push(line19);
+	 	let line20:number[] = [1, 70, 54, 71, 83, 51, 54, 69, 16, 92, 33, 48, 61, 43, 52, 1, 89, 19, 67, 48];
+	 	numberToCheck.push(line20);
+	
+		let greatestLine:number = this.searchGreatestLineWork(numberToCheck);
+		console.log("max line - " + greatestLine);
+
+		let greatestColumn:number = this.searchGreatestColumnWork(numberToCheck);
+		console.log("max column - " + greatestColumn);
+
+		let greatestDiagLUtoRD:number = this.searchGreatestDiagLUtoRD(numberToCheck);
+		console.log("max diag LUtoRD - " + greatestDiagLUtoRD);
+
+		let greatestDiagLDtoRU:number = this.searchGreatestDiagLDtoRU(numberToCheck);
+		console.log("max diag LDtoRU - " + greatestDiagLDtoRU);
+
+		let solvingTheProblem:number = Math.max(greatestLine, greatestColumn, greatestDiagLUtoRD,greatestDiagLDtoRU);
+		this._consoleText += solvingTheProblem;
+	}
+
+	private searchGreatestLineWork(array:number[][]):number {
+		let greatestLine:number = 0;
+		for (let i:number = 0; i< array.length; i++) {
+			for (let j:number = 0; j<= array[i].length-3; j++) {
+				let searchLine:number = array[i][j] * array[i][j+1] * array[i][j+2] * array[i][j+3];
+				if (searchLine > greatestLine) {
+					greatestLine = searchLine;
+				}
+			}
+		}
+		return greatestLine
+	}
+
+	private searchGreatestColumnWork(array:number[][]):number {
+		let greatestColumn:number = 0;
+		for (let i:number = 0; i< array.length - 3; i++) {
+			for (let j:number = 0; j<= array[i].length; j++) {
+				let searchLine:number = array[i][j] * array[i+1][j] * array[i+2][j] * array[i+3][j];
+				if (searchLine > greatestColumn) {
+					greatestColumn = searchLine;
+				}
+			}
+		}
+		return greatestColumn
+	}
+
+	private searchGreatestDiagLUtoRD(array:number[][]):number{
+		let greatestDiag:number = 0;
+		for (let i:number = 0; i< array.length-3; i++) {
+			for (let j:number = 0; j<= array[i].length-3; j++) {
+				let searchLine:number = array[i][j] * array[i+1][j+1] * array[i+2][j+2] * array[i+3][j+3];
+				if (searchLine > greatestDiag) {
+					greatestDiag = searchLine;
+				}
+			}
+		}
+		return greatestDiag
+	}
+
+	private searchGreatestDiagLDtoRU(array:number[][]):number{
+		let greatestDiag:number = 0;
+		for (let i:number = 3; i< array.length; i++) {
+			for (let j:number = 0; j<= array[i].length-3; j++) {
+				let searchLine:number = array[i][j] * array[i-1][j+1] * array[i-2][j+2] * array[i-3][j+3];
+				if (searchLine > greatestDiag) {
+					greatestDiag = searchLine;
+				}
+			}
+		}
+		return greatestDiag
+	}
+
+	
+
+	///////////////////////////////// 9 /////////////////////////////////
+
+	private triangleFunction():void {
+		this._consoleText += "Построение Треугольника Серпинского:\n" +
+		"при каждой итерации, рандомно создается новая точка на\n" +
+		"половине расстояния от предыдущей точки к одной из вершин.\n"
+		"Первая точка создается в рандомном месте на поле.\n\n"
+		this.initTextWindow(this._consoleText);
+		this.addedSierpinskiTriangle();
+	}
+
+	private _triangleContainer:PIXI.Container
+	private _pointRandomizer:number = 1 + Math.floor(Math.random()*3);
+	private addedSierpinskiTriangle():void {
+		this._triangleContainer = new PIXI.Container;
+		this._triangleContainer.x = MainContainer.WIDTH - this._windowWidth;
+		this.addChild(this._triangleContainer);
+
+		this.addedTrianglePoints();
+	}
+
+	private _point1:PIXI.Graphics;
+	private _point2:PIXI.Graphics;
+	private _point3:PIXI.Graphics;
+	private _tracepointX:number = Math.random() * this._windowWidth;
+	private _tracepointY:number = Math.random() * this._windowHeight;
+	private _interval:any;
+	private addedTrianglePoints():void {
+		const pointSize:number = 3;
+
+		let point1x:number = (this._windowWidth/3) + (Math.random() * this._windowWidth/3);
+		let point1y:number = Math.random() * (this._windowHeight / 2.5);
+		this._point1 = new PIXI.Graphics;
+		this._point1
+			.beginFill(0x00ff00)
+			.drawCircle(0, 0, pointSize);
+		this._point1.x = point1x;
+		this._point1.y = point1y;
+		this._triangleContainer.addChild(this._point1);
+
+		let point2x:number = Math.random() * this._windowWidth/3;
+		let point2y:number = (this._windowHeight/3) * 2 + (Math.random() * this._windowHeight/3);
+		this._point2 = new PIXI.Graphics;
+		this._point2
+			.beginFill(0x00ff00)
+			.drawCircle(0, 0, pointSize);
+		this._point2.x = point2x;
+		this._point2.y = point2y;
+		this._triangleContainer.addChild(this._point2);
+
+		let point3x:number = (this._windowWidth/3) * 2 + (Math.random() * this._windowWidth/3);
+		let point3y:number = (this._windowHeight/3) * 2 + (Math.random() * this._windowHeight/3);
+		this._point3 = new PIXI.Graphics;
+		this._point3
+			.beginFill(0x00ff00)
+			.drawCircle(0, 0, pointSize);
+		this._point3.x = point3x;
+		this._point3.y = point3y;
+		this._triangleContainer.addChild(this._point3);
+
+		let tracepoint:PIXI.Graphics = new PIXI.Graphics;
+		tracepoint
+			.beginFill(0xffffff)
+			.drawCircle(0, 0, pointSize)
+			.endFill;
+		tracepoint.x = this._tracepointX;
+		tracepoint.y = this._tracepointY;
+		this._triangleContainer.addChild(tracepoint);
+
+		this._interval = setInterval(() => {
+			this.addedTracePoint()
+		}, 150);
+		this._interval
+	}
+
+	private _tracepoint:PIXI.Graphics;
+	private addedTracePoint():void {
+		this._pointRandomizer = 1 + Math.floor(Math.random()*3);
+
+		let tracepointx:number;
+		let tracepointy:number;
+		if (this._pointRandomizer == 1) {
+			tracepointx = (this._tracepointX + this._point1.x) / 2;
+			tracepointy = (this._tracepointY + this._point1.y) / 2;
+		} else if (this._pointRandomizer == 2) {
+			tracepointx = (this._tracepointX + this._point2.x) / 2;
+			tracepointy = (this._tracepointY + this._point2.y) / 2;
+		} else if (this._pointRandomizer == 3) {
+			tracepointx = (this._tracepointX + this._point3.x) / 2;
+			tracepointy = (this._tracepointY + this._point3.y) / 2;
+		}
+
+		const pointSize:number = 3; 
+		this._tracepoint = new PIXI.Graphics;
+		this._tracepoint
+			.beginFill(0xffffff)
+			.drawCircle(0, 0, pointSize)
+		this._tracepoint.x = tracepointx;
+		this._tracepoint.y = tracepointy;
+		this._triangleContainer.addChild(this._tracepoint);
+
+		this._tracepointX = tracepointx;
+		this._tracepointY = tracepointy;
 	}
 }
 

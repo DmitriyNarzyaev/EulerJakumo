@@ -1,7 +1,7 @@
-# Euler jakumo
+# Tile-matching
 
 You can start this game by clicking on the link
-https://dmitriynarzyaev.github.io/EulerJakumo/
+https://dmitriynarzyaev.github.io/tile-matching/
 
 ## Deployment
 * Download and install Node.js and npm (https://www.npmjs.com/get-npm)
