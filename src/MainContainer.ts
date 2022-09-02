@@ -1,7 +1,8 @@
 import Container = PIXI.Container;
-import {} from "pixi.js";
+import { Loader, Sprite } from "pixi.js";
 import Button from "./Button";
 import TextWindow from "./TextWindow";
+import Global from "./Global";
 
 export default class MainContainer extends Container {
 	public static WIDTH:number = 1200;
@@ -13,10 +14,12 @@ export default class MainContainer extends Container {
 	private _textWindow:TextWindow;
 	private _textHighlighter:PIXI.Graphics;
 	private _consoleText:string = "";
+	private _loaderSwitcher:number = 0;
 
 	constructor() {
 		super();
 		this.jsonLoader();
+		this.pictureLoader();
 	}
 
 	private jsonLoader():void {
@@ -27,13 +30,30 @@ export default class MainContainer extends Container {
 			if (xhr.readyState === 4) {
 				if (xhr.status === 200) {
 					this._json = xhr.response;
-					this.initialComplete();
+					this._loaderSwitcher ++;
+					if (this._loaderSwitcher == 2) {
+						this.initialComplete();
+					}
 				} else {
 					console.log("JSON ERROR");
 				}
 			}
 		};
 		xhr.send();
+	}
+
+	private pictureLoader():void {
+		const loader:Loader = new Loader();
+		//loader.add("background", "background.jpg");
+		loader.add("pic1", "1.png");
+		loader.add("pic2", "2.png");
+		loader.load((loader, resources)=> {
+			this._loaderSwitcher ++;
+			if (this._loaderSwitcher == 2) {
+				this.initialComplete();
+			}
+		});
+		loader.load();
 	}
 
 	private initialComplete():void {
@@ -112,6 +132,10 @@ export default class MainContainer extends Container {
 		this.addChild(button14);
 		buttons.push(button14);
 
+		let button15:Button = new Button("Images", () => {this.imagesChangingFunction();},);
+		this.addChild(button15);
+		buttons.push(button15);
+
 		for (let i:number = 0; i < buttons.length; i++) {
 			buttons[i].x = indentX;
 			buttons[i].y = indentY;
@@ -138,10 +162,11 @@ export default class MainContainer extends Container {
 		if (this._textHighlighter) {
 			this.removeChild(this._textHighlighter);
 		}
-		if (this._triangleContainer) {
-			this.removeChild(this._triangleContainer);
+		if (this._temporaryContainer) {
+			this.removeChild(this._temporaryContainer);
 		}
 		clearInterval(this._interval);
+		Global.PIXI_APP.ticker.remove(this.ticker, this);
 	}
 
 	private initTextHighlighter():void {
@@ -728,20 +753,24 @@ export default class MainContainer extends Container {
 
 	private triangleFunction():void {
 		this._consoleText += "Построение Треугольника Серпинского:\n" +
-		"при каждой итерации, рандомно создается новая точка на\n" +
+		"При каждой итерации, рандомно создается новая точка на\n" +
 		"половине расстояния от предыдущей точки к одной из вершин.\n"
 		"Первая точка создается в рандомном месте на поле.\n\n"
 		this.initTextWindow(this._consoleText);
 		this.addedSierpinskiTriangle();
 	}
 
-	private _triangleContainer:PIXI.Container
+	private _temporaryContainer:PIXI.Container
 	private _pointRandomizer:number = 1 + Math.floor(Math.random()*3);
-	private addedSierpinskiTriangle():void {
-		this._triangleContainer = new PIXI.Container;
-		this._triangleContainer.x = MainContainer.WIDTH - this._windowWidth;
-		this.addChild(this._triangleContainer);
 
+	private addedTemporaryContainer():void {
+		this._temporaryContainer = new PIXI.Container;
+		this._temporaryContainer.x = MainContainer.WIDTH - this._windowWidth;
+		this.addChild(this._temporaryContainer);
+	}
+
+	private addedSierpinskiTriangle():void {
+		this.addedTemporaryContainer();
 		this.addedTrianglePoints();
 	}
 
@@ -762,7 +791,7 @@ export default class MainContainer extends Container {
 			.drawCircle(0, 0, pointSize);
 		this._point1.x = point1x;
 		this._point1.y = point1y;
-		this._triangleContainer.addChild(this._point1);
+		this._temporaryContainer.addChild(this._point1);
 
 		let point2x:number = Math.random() * this._windowWidth/3;
 		let point2y:number = (this._windowHeight/3) * 2 + (Math.random() * this._windowHeight/3);
@@ -772,7 +801,7 @@ export default class MainContainer extends Container {
 			.drawCircle(0, 0, pointSize);
 		this._point2.x = point2x;
 		this._point2.y = point2y;
-		this._triangleContainer.addChild(this._point2);
+		this._temporaryContainer.addChild(this._point2);
 
 		let point3x:number = (this._windowWidth/3) * 2 + (Math.random() * this._windowWidth/3);
 		let point3y:number = (this._windowHeight/3) * 2 + (Math.random() * this._windowHeight/3);
@@ -782,7 +811,7 @@ export default class MainContainer extends Container {
 			.drawCircle(0, 0, pointSize);
 		this._point3.x = point3x;
 		this._point3.y = point3y;
-		this._triangleContainer.addChild(this._point3);
+		this._temporaryContainer.addChild(this._point3);
 
 		let tracepoint:PIXI.Graphics = new PIXI.Graphics;
 		tracepoint
@@ -791,7 +820,7 @@ export default class MainContainer extends Container {
 			.endFill;
 		tracepoint.x = this._tracepointX;
 		tracepoint.y = this._tracepointY;
-		this._triangleContainer.addChild(tracepoint);
+		this._temporaryContainer.addChild(tracepoint);
 
 		this._interval = setInterval(() => {
 			this.addedTracePoint()
@@ -823,10 +852,76 @@ export default class MainContainer extends Container {
 			.drawCircle(0, 0, pointSize)
 		this._tracepoint.x = tracepointx;
 		this._tracepoint.y = tracepointy;
-		this._triangleContainer.addChild(this._tracepoint);
+		this._temporaryContainer.addChild(this._tracepoint);
 
 		this._tracepointX = tracepointx;
 		this._tracepointY = tracepointy;
+	}
+
+	///////////////////////////////// 9 /////////////////////////////////
+
+	private imagesChangingFunction():void {
+		this._consoleText += "Меняющиеся изображения:\n" +
+		"Первое изображение меняется на чёрный фон, а затем на второе изображение.\n" +
+		"Анимация происходит за заданное время.\n\n"
+		this.initTextWindow(this._consoleText);
+		this.imagesChanging();
+	}
+	
+	private _pic1:Sprite;
+	private _pic2:Sprite;
+	private _blackSquare:PIXI.Graphics
+	private _decreaseAlphaOnTick:number;
+
+	private _startTime:number;
+	private _stopTime:number;
+
+	private imagesChanging() {
+		this.addedTemporaryContainer();
+		
+		let inputText = prompt('Введите время анимации', "3");
+		this._decreaseAlphaOnTick = 1/((60/2) * Number(inputText));
+		const picSize:number = 250;
+		const picX:number = MainContainer.WIDTH - this._windowWidth - picSize/2;
+		const picY:number = (MainContainer.HEIGHT - picSize)/2;
+
+		this._pic2 = Sprite.from("pic2");
+		this._pic2.x = picX;
+		this._pic2.y = picY;
+		this._temporaryContainer.addChild(this._pic2);
+
+		this._blackSquare = new PIXI.Graphics;
+		this._blackSquare
+			.beginFill(0x000000)
+			.drawRect(0, 0, picSize, picSize);
+		this._blackSquare.x = picX;
+		this._blackSquare.y = picY;
+		this._temporaryContainer.addChild(this._blackSquare);
+
+		this._pic1 = Sprite.from("pic1");
+		this._pic1.x = picX;
+		this._pic1.y = picY;
+		this._temporaryContainer.addChild(this._pic1);
+
+		this._startTime = (new Date()).getTime();
+		Global.PIXI_APP.ticker.add(this.ticker, this);
+	}
+
+	private ticker():void {
+		console.log("шаг тикера");
+		if (this._pic1.alpha > 0) {
+			this._pic1.alpha -= this._decreaseAlphaOnTick;
+		}
+		else if(this._pic1.alpha <= 0 && this._blackSquare.alpha > 0) {
+			this._blackSquare.alpha -= this._decreaseAlphaOnTick;
+		}
+
+		if (this._blackSquare.alpha <= 0) {
+			this._stopTime = (new Date()).getTime();
+			let timeDifference:number = (this._stopTime - this._startTime) / 1000;
+			console.log("time = " + timeDifference);
+			Global.PIXI_APP.ticker.remove(this.ticker, this);
+		}
 	}
 }
 
